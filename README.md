@@ -1,2 +1,2 @@
 # TIPTOP
-test for TIPTOP-4gl。
+test for TIPTOP-4gl
