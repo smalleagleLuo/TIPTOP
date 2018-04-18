@@ -1,4 +1,6 @@
 FUNCTION t540_cs()
+DEFINE l_wc VARCHAR2(400),
+       l_wc2 VARCHAR2(400)
 	   CLEAR FORM
 	   IF NOT cl_null(g_argv1) THEN
               IF g_argv3 <> 'SUB' THEN       #NO:6961
@@ -7,7 +9,7 @@ FUNCTION t540_cs()
 		  LET g_wc = " 1=1 "         #NO:6961
               END IF
 	   ELSE
-              CONSTRUCT BY NAME g_wc ON                    # ø√πı§W®˙±¯•Û
+              CONSTRUCT BY NAME g_wc ON                    # Ëû¢Âπï‰∏äÂèñÊ¢ù‰ª∂
                   pmm01,pmm03,pmm04,pmm06,pmm09,pmm20,pmm45,pmm25,
                   pmm02,pmm12,pmm13,
                   pmm21,pmm43,pmm22,pmm42,pmmmksg,pmm40,pmm99, #No.7920 add
@@ -18,42 +20,21 @@ FUNCTION t540_cs()
               CALL t540_b_askkey()
               IF INT_FLAG THEN RETURN END IF
            END IF
-     #20180105  begin
-     IF g_paim06='1'  THEN #™F≤
-     	IF g_grup = '30210' OR g_grup = '31220' THEN
-		 		CALL s_abc1(0,g_user,g_grup,0,'cpmt540','pmm01') RETURNING g_condition,g_s,g_ax,g_ax2,g_s2,g_condition2
-		 		IF g_s='Y' THEN
-		 			 LET g_wc=g_wc CLIPPED," AND pmm01[1,3] IN(",g_condition,")"
-		 		END IF
-		 		CALL s_abc1(0,g_user,g_grup,0,'cpmt540','pmm04') RETURNING g_condition,g_s,g_ax,g_ax2,g_s2,g_condition2
-		 		IF g_ax2='Y' THEN
-		 			 IF g_s2='Y' THEN
-		 			 		LET g_wc2=g_wc2 CLIPPED,g_condition2
-		 			 END IF
-		 		END IF
-		 		{#¿À¨d≥°™˘©“¶≥
-		 		IF g_ax='Y' THEN
-		 			 LET g_wc=g_wc CLIPPED," AND pmigrup='",g_grup,"'"
-		 		END IF
-		 		}
-		 	END IF
-		 END IF
-		 #20180105 end
 
-	   #∏ÍÆ∆≈v≠≠™∫¿À¨d
-	   IF g_priv2='4' THEN                           #•uØ‡®œ•Œ¶€§v™∫∏ÍÆ∆
+	   #Ë≥áÊñôÊ¨äÈôêÁöÑÊ™¢Êü•
+	   IF g_priv2='4' THEN                           #Âè™ËÉΩ‰ΩøÁî®Ëá™Â∑±ÁöÑË≥áÊñô
 		  LET g_wc = g_wc clipped," AND pmmuser = '",g_user,"'"
 	   END IF
-	   IF g_priv3='4' THEN                           #•uØ‡®œ•Œ¨€¶P∏s™∫∏ÍÆ∆
+	   IF g_priv3='4' THEN                           #Âè™ËÉΩ‰ΩøÁî®Áõ∏ÂêåÁæ§ÁöÑË≥áÊñô
             LET g_wc = g_wc clipped," AND pmmgrup MATCHES '",g_grup CLIPPED,"*'"
 	   END IF
-	   IF g_argv2 = '0' THEN      #§w∂}•ﬂ
+	   IF g_argv2 = '0' THEN      #Â∑≤ÈñãÁ´ã
               LET g_wc = g_wc clipped," AND pmm25 IN ('X','0','1','2','6','9','S','R','W','O') "   
 	   END IF
-	   IF g_argv2 = '1' THEN      #§wÆ÷≤a
+	   IF g_argv2 = '1' THEN      #Â∑≤Ê†∏Ê∑Æ
 		  LET g_wc = g_wc clipped," AND pmm25 IN ('1') "   
 	   END IF
-	   IF g_argv2 = '2' THEN      #§wµo•X        
+	   IF g_argv2 = '2' THEN      #Â∑≤ÁôºÂá∫        
 		  LET g_wc = g_wc clipped," AND pmm25 IN ('2') "   
 	   END IF
 	   IF g_argv3 = 'SUB' THEN 
@@ -62,11 +43,33 @@ FUNCTION t540_cs()
 		  LET g_wc = g_wc clipped," AND pmm02 not IN ('SUB') "   
 	   END IF
 
+     #20180105  begin     
+     IF g_paim06='1'  THEN #Êù±Ëéû
+     	IF g_grup = '30210' OR g_grup = '31220' THEN
+		 		CALL s_abc1(0,g_user,g_grup,0,'cpmt540','pmm01') RETURNING g_condition,g_s,g_ax,g_ax2,g_s2,g_condition2
+		 		IF g_s='Y' THEN
+		 			 LET l_wc=g_wc CLIPPED," AND pmm01[1,3] IN(",g_condition,")"
+		 		END IF
+		 		CALL s_abc1(0,g_user,g_grup,0,'cpmt540','pmm04') RETURNING g_condition,g_s,g_ax,g_ax2,g_s2,g_condition2
+		 		IF g_ax2='Y' THEN
+		 			 IF g_s2='Y' THEN
+		 			 		LET l_wc2=g_wc2 CLIPPED,g_condition2
+		 			 END IF
+		 		END IF
+		 		{#Ê™¢Êü•ÈÉ®ÈñÄÊâÄÊúâ
+		 		IF g_ax='Y' THEN
+		 			 LET l_wc=l_wc CLIPPED," AND pmigrup='",g_grup,"'"
+		 		END IF
+		 		}
+		 	END IF
+		 END IF
+		 #20180105 end
+
 	   IF g_wc2=' 1=1 ' THEN 
                IF g_argv3='SUB' THEN  #NO:6961
 		               LET g_sql="SELECT DISTINCT pmm_file.ROWID,pmm01 ",   #No:9600
-                             "  FROM pmm_file,pmn_file ", #≤’¶X•XSQL´¸•O
-                             " WHERE pmm01=pmn01(+) AND ", g_wc CLIPPED
+                             "  FROM pmm_file,pmn_file ", #ÁµÑÂêàÂá∫SQLÊåá‰ª§
+                             " WHERE pmm01=pmn01(+) AND ", l_wc CLIPPED             #g_wc CLIPPED
                    IF NOT cl_null(g_argv4)  THEN   #NO:6961
                       LET g_sql= g_sql CLIPPED," AND pmn41='",g_argv4,"' ",   
                                                " ORDER BY pmm01 "
@@ -74,18 +77,18 @@ FUNCTION t540_cs()
                       LET g_sql=g_sql CLIPPED ," ORDER BY pmm01 " 
                    END IF
                ELSE
-		           LET g_sql="SELECT ROWID,pmm01 FROM pmm_file ", #≤’¶X•XSQL´¸•O
-                             " WHERE ",g_wc CLIPPED,
+		           LET g_sql="SELECT ROWID,pmm01 FROM pmm_file ", #ÁµÑÂêàÂá∫SQLÊåá‰ª§
+                             " WHERE ", l_wc CLIPPED             #g_wc CLIPPED
                              " ORDER BY pmm01"
                END IF
 	   ELSE
 		   LET g_sql="SELECT DISTINCT pmm_file.ROWID,pmm01 FROM pmm_file,pmn_file ",   #No:9600
-                          " WHERE ",g_wc CLIPPED," AND ",g_wc2 CLIPPED,
+                          " WHERE ",l_wc CLIPPED,"  AND ", l_wc2 CLIPPED,        #g_wc CLIPPED," AND ",g_wc2 CLIPPED,
                           "   AND pmm01 = pmn01(+)",
                           " ORDER BY pmm01"
 	   END IF
 
-	   PREPARE t540_prepare FROM g_sql           # RUNTIME Ωsƒ∂
+	   PREPARE t540_prepare FROM g_sql           # RUNTIME Á∑®Ë≠Ø
 	   DECLARE t540_cs                         # SCROLL CURSOR
 		SCROLL CURSOR WITH HOLD FOR t540_prepare
        IF g_argv3='SUB' THEN
@@ -95,7 +98,7 @@ FUNCTION t540_cs()
 #20111228 begin
                               " WHERE pmm02='SUB' AND pmn01(+)=pmm01 ",
 #20111228 end
-                              "   AND ",g_wc CLIPPED
+                              "   AND ", l_wc CLIPPED            #g_wc CLIPPED
                    IF NOT cl_null(g_argv4)  THEN   #NO:6961
                       LET g_sql= g_sql CLIPPED," AND pmn41='",g_argv4,"' "   
                    END IF
@@ -105,20 +108,20 @@ FUNCTION t540_cs()
 #20111228 begin
                               " WHERE pmm01 = pmn01(+) AND pmm02='SUB' ",
 #20111228 end
-                              "   AND ",g_wc CLIPPED,
-                              "   AND ",g_wc2
+                              "   AND ", l_wc CLIPPED,     #g_wc CLIPPED,
+                              "   AND ", l_wc2 CLIPPED,    #g_wc2
 	        END IF
        ELSE
 	       IF g_wc2=' 1=1 ' THEN
                 LET g_sql= "SELECT COUNT(*) FROM pmm_file",
-                              " WHERE pmm02 != 'SUB' AND ",g_wc CLIPPED
+                              " WHERE pmm02 != 'SUB' AND ",  l_wc CLIPPED       #g_wc CLIPPED
          ELSE
                LET g_sql= "SELECT COUNT(DISTINCT pmm01) FROM pmm_file,pmn_file",
 #20111228 begin
                           " WHERE pmm01 = pmn01(+)",
 #20111228 end                          
-                          "  AND pmm02 != 'SUB' AND ",g_wc CLIPPED," AND ",
-                          g_wc2
+                          "  AND pmm02 != 'SUB' AND ", l_wc CLIPPED, " AND ",        #g_wc CLIPPED," AND ",
+                          l_wc2 CLIPPED        #g_wc2
 	       END IF
 	   END IF
     PREPARE t540_precount FROM g_sql
